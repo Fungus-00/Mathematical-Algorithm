@@ -20,7 +20,7 @@ double min(double x, double y)
 main()
 {
     int bound=0,ex=0,mark=0,limit=0,div=0,x=0,y=0;
-    double   a,b,c,A,B,C,low,up,mid,d,e,f,g,h,i,j,k,mm=0,nn=0,D,p,q,x1,x2=0,y1,y2=2,sup,inf,test;
+    double   a,b,c,A,B,C,low,up,mid,d,e,f,g,h,i,j,k,mm=1,nn=1,D,p,q,x1,x2=0,y1,y2=2,sup,inf,test;
     printf("For the function f(x)=(ax^2+bx+c)/(Ax^2+Bx+C),\n");
     printf("input each coefficient of the numerator monomial a,b,c: ");
     scanf("%lf%lf%lf",&a,&b,&c);
@@ -233,7 +233,7 @@ main()
                     if(low+up==d*2) {y=2; y1=low; y2=up;}   //to rank x,y
                     else {y=1; y1=mid;}
                 }
-                else {
+                else {x=y=1;
                     mm=low*low+e*low+f;
                     nn=up*up+e*up+f;
                     if(mm<nn) {x1=low; y1=up;}  //to rank x,y
@@ -241,13 +241,14 @@ main()
                 }
             }
             else if(D==0) { //Function diverges at two points.
-                if(low<=d && d<=up) {
+                if (low==d && d==up) {bound=3; mark=0;}
+                else if(low<d && d<up) {
                     bound=2; div=1;
                     if(low+up==d*2) {y=2; y1=low; y2=up;}   //to rank x,y
                     else if(low+up<d*2) {y=1; y1=low;}
                     else {y=1; y1=up;}
                 }
-                else {
+                else {x=y=1;
                     mm=low*low+e*low+f;
                     nn=up*up+e*up+f;
                     if(mm<nn) {x1=low; y1=up;}  //to rank x,y
@@ -255,10 +256,23 @@ main()
                 }
             }
             else {p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;   //Function diverges at two points.
-                if(low<=p && q<=up) {bound=3; div=2; mark=0;}
-                else if(low<=p && p<=up) {bound=3; div=1; d=p; mark=0;}
-                else if(low<=q && q<=up) {bound=3; div=1; d=q; mark=0;}
-                else if(p<low && low<=d && d<=up && up<q) {
+                if((low==p && p==up) || (low<=p && q<up) || (low<p && q<=up) || (low==q && q==up)) {bound=3; div=2; mark=0;}
+                else if(low<p && p<up) {bound=3; div=1; d=p; mark=0;}
+                else if(low<q && q<up) {bound=3; div=1; d=q; mark=0;}
+                else if(low==p && up==q) {bound=1; div=2; x=1; x1=d; nn=mm=f-e*e/4;}
+                else if(low==p) {bound=div=x=1;
+                    if(up<=d) {x1=up; nn=mm=up*up+e*up+f;}
+                    else {x1=d; nn=mm=f-e*e/4;}
+                    d=p;
+                }
+                else if(low==q) {bound=2; div=1; y=1; y1=up; nn=mm=up*up+e*up+f; d=q;}
+                else if(up==p) {bound=2; div=1; y=1; y1=low; nn=mm=low*low+e*low+f; d=p;}
+                else if(up==q) {bound=div=x=1;
+                    if(d<=low) {x1=low; nn=mm=low*low+e*low+f;}
+                    else {x1=d; nn=mm=f-e*e/4;}
+                    d=q;
+                }
+                else if(p<low && low<=d && d<=up && up<q) {x=1; x1=d;
                     if(low+up<=d*2) mid=low;
                     else mid=up;
                     mm=d*d+e*d+f;
@@ -267,7 +281,7 @@ main()
                     else if(low+up<d*2) {y=1; y1=low;}
                     else {y=1; y1=up;}
                 }
-                else {
+                else {x=y=1;
                     mm=low*low+e*low+f;
                     nn=up*up+e*up+f;
                     if(mm<nn) {x1=low; y1=up;}  //to rank x,y
@@ -280,33 +294,41 @@ main()
                 mid=x; x=y; y=mid;
                 mid=x1; x1=y1; y1=mid;
                 mid=x2; x2=y2; y2=mid;
+                if(bound==1) bound=2;
                 if(bound==2) bound=1;
             }
         }
 
-        else {
-            D=e*e-f*4; i=e-g*2; k=f+g*(g-e);
+        else {D=e*e-f*4; i=e-g*2; k=f+g*(g-e);
 
-            if(D<0) {d=sqrt(k); //Since we have D<0 ==> k>0
+            if(D<0) {d=sqrt(k); //since D<0 ==> k>0
                 p=-d-g; q=d-g;
-                if(low+g<=0 && 0<=up+g) {
-                    if(low+g==0) mm=0;
-                    else if(p<low) mm=(low+g)/(low*low+e*low+f);
-                    else mm=1/(i-d*2);
-                    if(up+g==0) up=0;
-                    else if(up<q) nn=(up+g)/(up*up+e*up+f);
-                    else nn=1/(i+d*2);
+                if(low+g<=0 && 0<=up+g) {x=y=1;
+                    if(low+g==0) {mm=0; y1=-g;}
+                    else if(p<low) {mm=(low+g)/(low*low+e*low+f); y1=low;}
+                    else {mm=1/(i-d*2); y1=p;}
+                    if(up+g==0) {nn=0; x1=-g;}
+                    else if(up<q) {nn=(up+g)/(up*up+e*up+f); x1=up;}
+                    else {nn=1/(i+d*2); x1=q;}
                 }
-                else if(up<=p || (p<=low && up<=q) || q<=low) {
+                else if(up<=p || (p<=low && up<=q) || q<=low) {x=y=1;
                     mm=(low+g)/(low*low+e*low+f);
                     nn=(up+g)/(up*up+e*up+f);
+                    if(mm<nn) {x1=low; y1=up;}  //to rank x,y
+                    if(mm>nn) {x1=up; y1=low;}
                 }
                 else {
-                    if(up<=k/(low+g)-g) mid=low;
-                    else mid=up;
+                    if(up+g<0) {nn=1/(i-d*2); y=1; y1=p;
+                        if(up<k/(low+g)-g) {mid=low; x=1; x1=low;}
+                        else if(up==k/(low+g)-g) {mid=low; x=2; x1=low; x2=up;}
+                        else {mid=up; x=1; x1=up;}
+                    }
+                    else {nn=1/(i+d*2); x=1; x1=q;
+                        if(up<k/(low+g)-g) {mid=low; y=1; y1=low;}
+                        else if(up==k/(low+g)-g) {mid=low; y=2; y1=low; y2=up;}
+                        else {mid=up; y=1; y1=low;}
+                    }
                     mm=(mid+g)/(mid*mid+e*mid+f);
-                    if(up+g<0) nn=1/(i-d*2);
-                    else nn=1/(i+d*2);
                 }
             }
 
@@ -316,9 +338,15 @@ main()
                 if(D==0) {ex=1;}
             }
             
-            if(mark==4){mid=b/A; low=low*mid; up=up*mid;}
-            else {mid=a/A; low=(low*h+1)*mid; up=(up*h+1)*mid;}
-            mark=1;
+            if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; h=1;}
+            else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid;}
+            if(mid*h>0) {
+                mid=x; x=y; y=mid;
+                mid=x1; x1=y1; y1=mid;
+                mid=x2; x2=y2; y2=mid;
+                if(bound==1) bound=2;
+                if(bound==2) bound=1;
+            }
         }
     }
 
