@@ -240,7 +240,7 @@ main()
                     if(mm>nn) {x1=up; y1=low;}
                 }
             }
-            else if(D==0) { //Function diverges at two points.
+            else if(D==0) {ex=1;    //Function diverges at two points.
                 if (low==d && d==up) {bound=3; mark=0;}
                 else if(low<d && d<up) {
                     bound=2; div=1;
@@ -255,7 +255,8 @@ main()
                     if(mm>nn) {x1=up; y1=low;}
                 }
             }
-            else {p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;   //Function diverges at two points.
+            else {ex=2; //Function diverges at two points.
+                p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
                 if((low==p && p==up) || (low<=p && q<up) || (low<p && q<=up) || (low==q && q==up)) {bound=3; div=2; mark=0;}
                 else if(low<p && p<up) {bound=3; div=1; d=p; mark=0;}
                 else if(low<q && q<up) {bound=3; div=1; d=q; mark=0;}
@@ -332,22 +333,57 @@ main()
                 }
             }
 
-            if(k==0) {
-                if(low+g<=0 && 0<=g+up) bound=3;
-                else 
-                if(D==0) {ex=1;}
-            }
-            
-            if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; h=1;}
-            else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid;}
-            if(mid*h>0) {
-                mid=x; x=y; y=mid;
-                mid=x1; x1=y1; y1=mid;
-                mid=x2; x2=y2; y2=mid;
-                if(bound==1) bound=2;
-                if(bound==2) bound=1;
+            if(k==0) { //#hyperbola
+                if(D==0) {ex=1; d=-g;   // (k=0 and D=0) ==> e=g*2
+                    if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+                    else if(low==d) {div=1; bound=2; y=1; y1=up; nn=mm=1/(up+g);}
+                    else if(up==d) {div=1; bound=x=1; x1=low; nn=mm=1/(low+g);}
+                    else {x=y=1;
+                        mm=1/(low+g);
+                        nn=1/(up+g);
+                        if(mm<nn) {x1=low; y1=up;}  //to rank x,y
+                        if(mm>nn) {x1=up; y1=low;}
+                    }
+                }
+                else {ex=2; d=g-e; inf=1/(e-g*2);
+                    if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1; p=d; q=-g;}
+                    else if((low+g==0 && up+g==0)){bound=3; p=d; q=-g;}
+                    else if(low==d) {div=1; bound=2;
+                        if(up+g==0) {limit=1; p=up;}
+                        else {y=1; y1=up; nn=mm=1/(up+g);}
+                    }
+                    else if(up==d) {div=1; bound=1;
+                        if(low+g==0) {limit=1; p=low;}
+                        else {x=1; x1=low; nn=mm=1/(low+g);}
+                    }
+                    else if(low+g==0) {limit=1; p=low;
+                        if(low<d) {y=1; y1=up; nn=mm=1/(up+g);}
+                        else {x=1; x1=low; nn=mm=1/(low+g);}
+                    }
+                    else if(up+g==0) {limit=1; p=up;
+                        if(up<d) {x=1; x1=low; nn=mm=1/(low+g);}
+                        else {y=1; y1=up; nn=mm=1/(up+g);}
+                    }
+                    else {x=y=1;
+                        mm=1/(low+g);
+                        nn=1/(up+g);
+                        if(mm<nn) {x1=low; y1=up;}  //to rank x,y
+                        if(mm>nn) {x1=up; y1=low;}
+                    }
+                }
             }
         }
+            
+        if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; h=1;}
+        else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid;}
+        if(mid*h>0) {
+            mid=x; x=y; y=mid;
+            mid=x1; x1=y1; y1=mid;
+            mid=x2; x2=y2; y2=mid;
+            if(bound==1) bound=2;
+            if(bound==2) bound=1;
+		}
+    
     }
 
     
@@ -367,8 +403,8 @@ main()
         else printf("Error, no extreme value exists!\n");
     }
     if(bound==4) printf("Error, the denominator cannot be zero!\n");
-    if(ex==1 || div==1) printf("(No defined value at point x=%lf)\n",d);
     if(ex==2 || div==2) printf("(No defined value at points x=%lf and x=%lf)\n",p,q);
+    else if(ex==1 || div==1) printf("(No defined value at point x=%lf)\n",d);
     if(div==1) printf("f(x) diverges at x=%lf\n",d);
     if(div==2) printf("f(x) diverges at x=%lf and x=%lf\n",p,q);
     if(limit>=1) printf("Function converges to %lf at x=%lf",inf,p);
