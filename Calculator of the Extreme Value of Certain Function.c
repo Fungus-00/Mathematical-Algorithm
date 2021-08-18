@@ -222,7 +222,7 @@ main()
             }
         } else
 
-        else if(mark==2 || mark==3) {
+        if(mark==2 || mark==3) {
             D=e*e-f*4; d=-e/2;
             if(D<0) {
                 if(low<=d && d<=up) {x=1; x1=d;
@@ -242,11 +242,13 @@ main()
             }
             else if(D==0) {ex=1;    //Function diverges at two points.
                 if (low==d && d==up) {bound=3; mark=0;}
+                else if(low==d) {bound=2; div=1; y=1; y1=up; mm=nn=up*up+e*up+f;}
+                else if(up==d) {bound=2; div=1; y=1; y1=low; mm=nn=low*low+e*low+f;}
                 else if(low<d && d<up) {
                     bound=2; div=1;
-                    if(low+up==d*2) {y=2; y1=low; y2=up;}   //to rank x,y
-                    else if(low+up<d*2) {y=1; y1=low;}
-                    else {y=1; y1=up;}
+                    if(low+up==d*2) {y=2; y1=low; y2=up; mm=nn=low*low+e*low+f;}   //to rank x,y
+                    else if(low+up<d*2) {y=1; y1=low; mm=nn=low*low+e*low+f;}
+                    else {y=1; y1=up; up*up+e*up+f;}
                 }
                 else {x=y=1;
                     mm=low*low+e*low+f;
@@ -370,8 +372,55 @@ main()
                     }
                 }
             }
+            else if(D==0) {ex=1; d=-e/2;
+                if(low!=d) mm=(low+g)/(low*low+low*e+f);
+                if(up!=d) nn=(up+g)/(up*up+up*e+f);
+                if(low==d && d==up) {bound=3; mark=0;}
+                else if(e<g) {
+                    if(low<d && d<up) {
+                        bound=2; div=1;
+                        if(low+g<=0) {y=1; y1=low; nn=mm;}
+                        else if(mm<nn) {y=1; y1=low; nn=mm;}
+                        else if(mm==nn) {y=2; y1=low; y2=up;}
+                        else if(mm>nn) {y=1; y1=up; mm=nn;}
+                    }
+                    else if(low==d) {bound=2; div=1; y=1; y1=up; mm=nn;}
+                    else if(up==d) {bound=2; div=1; y=1; y1=low; nn=mm;}
+                    else if(low+d+g*2<0 && up+d+g*2>0) {y=1; y1=-d-g*2;
+                        if(mm<nn) {x=1; x1=up; mm=nn;}
+                        else if(mm==nn) {x=2; x1=low; x2=up;}
+                        else if(mm>nn) {x1=1; x1=low; nn=mm;}
+                        mm=1/(i-sqrt(k)*2);
+                    }
+                    else {x=y=1;
+                        if(mm<nn) {x1=up; y1=low;}
+                        if(mm>nn) {x1=low; y1=up;}
+                    }
+                }
+                else if(e>g) {
+                    if(low<d && d<up) {
+                        bound=1; div=1;
+                        if(up+g>=0) {x=1; x1=up; mm=nn;}
+                        else if(mm<nn) {x=1; x1=up; mm=nn;}
+                        else if(mm==nn) {x=2; x1=low; x2=up;}
+                        else if(mm>nn) {x=1; x1=up; nn=mm;}
+                    }
+                    else if(low==d) {bound=1; div=1; x=1; x1=up; mm=nn;}
+                    else if(up==d) {bound=1; div=1; x=1; x1=low; nn=mm;}
+                    else if(low+d+g*2<0 && up+d+g*2>0) {x=1; x1=-d-g*2;
+                        if(mm<nn) {y=1; y1=low; nn=mm;}
+                        else if(mm==nn) {y=2; y1=low; y2=up;}
+                        else if(mm>nn) {y=1; y1=up; mm=nn;}
+                        mm=1/(i+sqrt(k)*2);
+                    }
+                    else {x=y=1;
+                        if(mm<nn) {x1=up; y1=low;}
+                        if(mm>nn) {x1=low; y1=up;}
+                    }
+                }
+            }
             if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
-            else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
+            if(mark==5) {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
             if(mid*h>0) {
                 mid=x; x=y; y=mid;
                 mid=x1; x1=y1; y1=mid;
@@ -380,7 +429,6 @@ main()
                 if(bound==2) bound=1;
 		    }
         }
-    
     }
 
     
@@ -406,4 +454,5 @@ main()
     if(div==2) printf("f(x) diverges at x=%lf and x=%lf\n",p,q);
     if(limit>=1) printf("f(x) converges to %lf at x=%lf",inf,p);
     if(limit==2) printf(", and to %lf at x=%lf",sup,q);
+    printf("%lf",test);
 }
