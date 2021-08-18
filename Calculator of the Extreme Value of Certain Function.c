@@ -222,7 +222,7 @@ main()
             }
         } else
 
-        if(mark==2 || mark==3) {
+        else if(mark==2 || mark==3) {
             D=e*e-f*4; d=-e/2;
             if(D<0) {
                 if(low<=d && d<=up) {x=1; x1=d;
@@ -301,7 +301,6 @@ main()
         }
 
         else {D=e*e-f*4; i=e-g*2; k=f+g*(g-e);
-
             if(D<0) {d=sqrt(k); //since D<0 ==> k>0
                 p=-d-g; q=d-g;
                 if(low+g<=0 && 0<=up+g) {x=y=1;
@@ -332,7 +331,6 @@ main()
                     mm=(mid+g)/(mid*mid+e*mid+f);
                 }
             }
-
             if(k==0) { //#hyperbola
                 if(D==0) {ex=1; d=-g;   // (k=0 and D=0) ==> e=g*2
                     if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
@@ -350,7 +348,7 @@ main()
                     else if((low+g==0 && up+g==0)) {bound=3;}
                     else if(low==d) {div=1;
                         if(up+g==0) {bound=3; limit=1;}
-                        else {bound=2;y =1; y1=up; nn=mm=1/(up+e-g);}
+                        else {bound=2; y=1; y1=up; nn=mm=1/(up+e-g);}
                     }
                     else if(up==d) {div=1;
                         if(low+g==0) {bound=3; limit=1;}
@@ -372,17 +370,16 @@ main()
                     }
                 }
             }
+            if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
+            else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
+            if(mid*h>0) {
+                mid=x; x=y; y=mid;
+                mid=x1; x1=y1; y1=mid;
+                mid=x2; x2=y2; y2=mid;
+                if(bound==1) bound=2;
+                if(bound==2) bound=1;
+		    }
         }
-            
-        if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
-        else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
-        if(mid*h>0) {
-            mid=x; x=y; y=mid;
-            mid=x1; x1=y1; y1=mid;
-            mid=x2; x2=y2; y2=mid;
-            if(bound==1) bound=2;
-            if(bound==2) bound=1;
-		}
     
     }
 
@@ -409,5 +406,4 @@ main()
     if(div==2) printf("f(x) diverges at x=%lf and x=%lf\n",p,q);
     if(limit>=1) printf("f(x) converges to %lf at x=%lf",inf,p);
     if(limit==2) printf(", and to %lf at x=%lf",sup,q);
-    printf("\n%lf",test);
 }
