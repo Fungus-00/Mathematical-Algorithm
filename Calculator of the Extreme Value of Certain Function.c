@@ -45,7 +45,7 @@ main()
         else if(b*C==B*c) {d=-C/B; bound=-1; ex=1; mm=b/B;}    //#constant function (without one point)
         else {d=-C/B; //#hyperbola
             if(b==0) j=B;   else j=b/B;
-            if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+            if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
             else if(low==d) {div=1;
                 if(j>0) {bound=x=1; x1=up; mm=(up*b+c)/(up*B+C);}
                 else {bound=2; y=1; y1=up; nn=(up*b+c)/(up*B+C);}
@@ -94,7 +94,7 @@ main()
         d=-C/B; k=c/a+(b/a+d)*d;
 
         if(k<0) {j=a/B;   //#function like x-1/x
-            if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+            if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
             else if(low==d) {div=1;
                 if(j>0) {bound=2; y=1; y1=up; nn=(a*up*up+b*up+c)/(B*up+C);}
                 else {bound=x=1; x1=up; mm=(a*up*up+b*up+c)/(B*up+C);}
@@ -132,7 +132,7 @@ main()
         }
         
         else {e=sqrt(k); j=a/B;  //#a pair of ticks
-            if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+            if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
             else if(low==d) {div=1;
                 if(j>0) {bound=x=1;
                     if(up<=d+e) {x1=up; mm=(up*b+c)/(up*B+C);}
@@ -259,7 +259,7 @@ main()
             }
             else {ex=2; //Function diverges at two points.
                 p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
-                if((low==p && p==up) || (low<=p && q<up) || (low<p && q<=up) || (low==q && q==up)) {bound=3; div=2; mark=0;}
+                if(low==p && p==up || low<=p && q<up || low<p && q<=up || low==q && q==up) {bound=3; div=2; mark=0;}
                 else if(low<p && p<up) {bound=3; div=1; d=p; mark=0;}
                 else if(low<q && q<up) {bound=3; div=1; d=q; mark=0;}
                 else if(low==p && up==q) {bound=1; div=2; x=1; x1=d; nn=mm=f-e*e/4;}
@@ -313,7 +313,7 @@ main()
                     else if(up<q) {nn=(up+g)/(up*up+e*up+f); x1=up;}
                     else {nn=1/(i+d*2); x1=q;}
                 }
-                else if(up<=p || (p<=low && up<=q) || q<=low) {x=y=1;
+                else if(up<=p || p<=low && up<=q || q<=low) {x=y=1;
                     mm=(low+g)/(low*low+e*low+f);
                     nn=(up+g)/(up*up+e*up+f);
                     if(mm<nn) {x1=low; y1=up;}  //to rank x,y
@@ -335,7 +335,7 @@ main()
             }
             if(k==0) { //#hyperbola
                 if(D==0) {ex=1; d=-g;   // (k=0 and D=0) ==> e=g*2
-                    if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+                    if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
                     else if(low==d) {div=1; bound=2; y=1; y1=up; nn=mm=1/(up+g);}
                     else if(up==d) {div=1; bound=x=1; x1=low; nn=mm=1/(low+g);}
                     else {x=y=1;
@@ -418,6 +418,16 @@ main()
                         if(mm>nn) {x1=low; y1=up;}
                     }
                 }
+            }
+            if(k<0) {ex=2;
+                p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
+                if(low!=p && low!=q) mm=(low+g)/(low*low+low*e+f);
+                if(up!=p && up!=q) nn=(up+g)/(up*up+up*e+f);
+                if(low==p && p==up || low==q && q==up) bound=3;
+                else if(low<=p && q<=up) {bound=3; div=2;}
+                else if(low==p || low==q) {bound=2; div=1; y=1; y1=up; mm=nn;}
+                else if(up==p || up==q) {bound=1; div=1; x=1; x1=low; nn=mm;}
+                else {x=y=1; x1=low; y1=up;}
             }
             if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
             if(mark==5) {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
