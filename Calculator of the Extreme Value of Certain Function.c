@@ -345,37 +345,37 @@ main()
                         if(mm>nn) {x1=up; y1=low;}
                     }
                 }
-                else {ex=2; d=g-e; inf=1/(e-g*2);
-                    if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1; p=d; q=-g;}
-                    else if((low+g==0 && up+g==0)){bound=3; p=d; q=-g;}
-                    else if(low==d) {div=1; bound=2;
-                        if(up+g==0) {limit=1; p=up;}
-                        else {y=1; y1=up; nn=mm=1/(up+g);}
+                else {ex=2; d=g-e; p=-g; q=d; inf=1/(e-g*2);
+                    if((low<d && d<up) || (low==d && d==up)) {bound=3; div=1;}
+                    else if((low+g==0 && up+g==0)) {bound=3;}
+                    else if(low==d) {div=1;
+                        if(up+g==0) {bound=3; limit=1;}
+                        else {bound=2;y =1; y1=up; nn=mm=1/(up+e-g);}
                     }
-                    else if(up==d) {div=1; bound=1;
-                        if(low+g==0) {limit=1; p=low;}
-                        else {x=1; x1=low; nn=mm=1/(low+g);}
+                    else if(up==d) {div=1;
+                        if(low+g==0) {bound=3; limit=1;}
+                        else {bound=1; x=1; x1=low; nn=mm=1/(low+e-g);}
                     }
-                    else if(low+g==0) {limit=1; p=low;
-                        if(low<d) {y=1; y1=up; nn=mm=1/(up+g);}
-                        else {x=1; x1=low; nn=mm=1/(low+g);}
+                    else if(low+g==0) {limit=1;
+                        if(low<d) {y=1; y1=up; nn=mm=1/(up+e-g);}
+                        else {x=1; x1=up; nn=mm=1/(up+e-g);}
                     }
-                    else if(up+g==0) {limit=1; p=up;
-                        if(up<d) {x=1; x1=low; nn=mm=1/(low+g);}
-                        else {y=1; y1=up; nn=mm=1/(up+g);}
+                    else if(up+g==0) {limit=1;
+                        if(up<d) {x=1; x1=low; nn=mm=1/(low+e-g);}
+                        else {y=1; y1=low; nn=mm=1/(low+e-g);}
                     }
                     else {x=y=1;
-                        mm=1/(low+g);
-                        nn=1/(up+g);
-                        if(mm<nn) {x1=low; y1=up;}  //to rank x,y
-                        if(mm>nn) {x1=up; y1=low;}
+                        mm=1/(low+e-g);
+                        nn=1/(up+e-g);
+                        if(mm<nn) {x1=up; y1=low;}  //to rank x,y
+                        if(mm>nn) {x1=low; y1=up;}
                     }
                 }
             }
         }
             
-        if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; h=1;}
-        else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid;}
+        if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
+        else {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
         if(mid*h>0) {
             mid=x; x=y; y=mid;
             mid=x1; x1=y1; y1=mid;
@@ -407,6 +407,7 @@ main()
     else if(ex==1 || div==1) printf("(No defined value at point x=%lf)\n",d);
     if(div==1) printf("f(x) diverges at x=%lf\n",d);
     if(div==2) printf("f(x) diverges at x=%lf and x=%lf\n",p,q);
-    if(limit>=1) printf("Function converges to %lf at x=%lf",inf,p);
+    if(limit>=1) printf("f(x) converges to %lf at x=%lf",inf,p);
     if(limit==2) printf(", and to %lf at x=%lf",sup,q);
+    printf("\n%lf",test);
 }
