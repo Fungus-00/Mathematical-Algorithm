@@ -413,7 +413,7 @@ main()
                 else if(up==p || up==q) {bound=1; div=1; d=up; x=1; x1=low; nn=mm;}
                 else {x=y=1; x1=low; y1=up;}
             }
-            else {ex=2; d=sqrt(k);  
+            else {ex=2; d=sqrt(k);  //There are two conditions.
                 p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
                 if(low<=p && q<up || low<p && q<=up) {bound=3; div=2;}
                 else if(low<p && p<up || low==p && p==up) {bound=3; div=1; d=p;}
