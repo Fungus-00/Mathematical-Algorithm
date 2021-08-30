@@ -1,26 +1,10 @@
 #include    <stdio.h>
 #include    <math.h>
-double max(double x, double y)
-{
-	double z;
-	if(x>=y) z=x;
-	else z=y;
-	return z;
-}
-
-double min(double x, double y)
-{
-	double z;
-	if(x<=y) z=x;
-	else z=y;
-	return z;
-}
-
 
 main()
 {
     int bound=0,ex=0,mark=0,limit=0,div=0,x=0,y=0;
-    double   a,b,c,A,B,C,low,up,mid,d,e,f,g,h,i,j,k,mm=1,nn=1,D,p,q,x1,x2=0,y1,y2=2,sup,inf,test;
+    double   a,b,c,A,B,C,low,up,mid,d,e,f,g,h,i,j=0,k,mm=1,nn=1,D,p,q,x1,x2=0,y1,y2=0,sup,inf;
     printf("For the function f(x)=(ax^2+bx+c)/(Ax^2+Bx+C),\n");
     printf("input each coefficient of the numerator monomial a,b,c: ");
     scanf("%lf%lf%lf",&a,&b,&c);
@@ -28,7 +12,7 @@ main()
     scanf("%lf%lf%lf",&A,&B,&C);
     printf("input the domain as a closed interval: ");
     scanf("%lf%lf",&low,&up);
-    mid=max(low,up); low=min(low,up); up=mid;
+    if(up<low) {mid=low; up=low; low=mid;}
     if(low==up) bound=-1;   //Programme can omit ordering x and y if so, since they are the same.
 
     if(A==0 && B==0 && C==0) bound=4;
@@ -162,10 +146,8 @@ main()
                 if(mm>nn) {x1=up; y1=low;}
             }
             if(mark!=0) {  //The vertex abscissa of a certain tick is between upper bound and lower bound.
-				h=int((a*low*low+b*low+c)/(B*low+C)*pow(2,24)+0.5)/pow(2,24);
-				i=int((a*up*up+b*up+c)/(B*up+C)*pow(2,24)+0.5)/pow(2,24);	//To correctly confirm if "i==h", the output accuracy needs reducing.
-				if(up<=d+k/(low-d)) mm=h;
-                else mm=i;	//The following is to rank x,y.
+                if(up<=d+k/(low-d)) mm=(a*low*low+b*low+c)/(B*low+C);
+                else mm=(a*up*up+b*up+c)/(B*up+C);	//The following is to rank x,y.
                 if(i==h) {
                     if(mm<nn) {
                         x=2; x1=low; x2=up; y=1;
@@ -207,13 +189,12 @@ main()
         
         if(mark==1) {D=e*e-f*4;    //#constant function
             bound=-1; mm=nn=a/A;
-            if(D<0) {}
-            else if(D==0) {ex=1; d=-e/2;    //to judge if the bound exists (the same below)
+            if(D==0) {ex=1; d=-e/2;    //to judge if the bound exists (the same below)
                 if(low==d && d==up) bound=3;
                 else if(low==d) {limit=1; p=low; inf=mm;}
                 else if(up==d) {limit=1; p=up; inf=mm;}
         	}
-            else {ex=2; sup=inf=mm;
+            else if(D>0){ex=2; sup=inf=mm;
                 p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
                 if(low==up && (low==p || low==q)) bound=3;
                 else if(low==p && q==up) limit=2;
@@ -333,6 +314,7 @@ main()
                     mm=(mid+g)/(mid*mid+e*mid+f);
                 }
             }
+            else
             if(k==0) { //#hyperbola
                 if(D==0) {ex=1; d=-g;   // (k=0 and D=0) ==> e=g*2
                     if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
@@ -372,7 +354,8 @@ main()
                     }
                 }
             }
-            else if(D==0) {ex=1; d=-e/2;
+            else
+            if(D==0) {ex=1; d=-e/2;
                 if(low!=d) mm=(low+g)/(low*low+low*e+f);
                 if(up!=d) nn=(up+g)/(up*up+up*e+f);
                 if(low==d && d==up) {bound=3; mark=0;}
@@ -419,15 +402,104 @@ main()
                     }
                 }
             }
+            else
             if(k<0) {ex=2;
                 p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
                 if(low!=p && low!=q) mm=(low+g)/(low*low+low*e+f);
                 if(up!=p && up!=q) nn=(up+g)/(up*up+up*e+f);
                 if(low==p && p==up || low==q && q==up) bound=3;
                 else if(low<=p && q<=up) {bound=3; div=2;}
-                else if(low==p || low==q) {bound=2; div=1; y=1; y1=up; mm=nn;}
-                else if(up==p || up==q) {bound=1; div=1; x=1; x1=low; nn=mm;}
+                else if(low==p || low==q) {bound=2; div=1; d=low; y=1; y1=up; mm=nn;}
+                else if(up==p || up==q) {bound=1; div=1; d=up; x=1; x1=low; nn=mm;}
                 else {x=y=1; x1=low; y1=up;}
+            }
+            else {ex=2; d=sqrt(k);
+                p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
+                if(low<=p && q<up || low<p && q<=up) {bound=3; div=2; test=q;}
+                else if(low<p && p<up || low==p && p==up) {bound=3; div=1; d=p;}
+                else if(low<q && q<up || low==q && q==up) {bound=3; div=1; d=q;}
+                else if(e>g*2) {
+                    if(low==p && up==q) {bound=2; div=2; y=1; y1=-d-g; nn=mm=1/(i-d*2);}
+                    else if(low==p) {bound=2; div=1; y=1;
+                        if(up+d+g<0) {y1=up; nn=mm=(up+g)/(up*up+up*e+f);}
+                        else {y1=-d-g; nn=mm=1/(i-d*2);}
+                        d=p;
+                    }
+                    else if(up==q) {bound=2; div=1; y=1;
+                        if(low+d+g>0) {y1=low; nn=mm=(low+g)/(low*low+low*e+f);}
+                        else {y1=-d-g; nn=mm=1/(i-d*2);}
+                        d=q;
+                    }
+                    else if(up==p) {bound=1; div=1; d=p; x=1; x1=low; nn=mm=(x1+g)/(x1*x1+x1*e+f);}
+                    else if(low==q) {bound=1; div=1; x=1;
+                        if(up<d-g) x1=up;
+                        else x1=d-g;
+                        nn=mm=(x1+g)/(x1*x1+x1*e+f);
+                        d=q;
+                    }
+                    else if(low+d+g<0 && 0<up+d+g) {y=1; y1=-d-g;
+                        if(up<k/(low+g)-g) {x=1; x1=low;}
+                        else if(up==k/(low+g)-g) {x=2; x1=low; x2=up;}
+                        else {x=1; x1=up;}
+                        mm=(x1+g)/(x1*x1+e*x1+f);
+                        nn=1/(i-d*2);
+                    }
+                    else if(low<d-g && d-g<up) {x=1; x1=d-g;
+                        if(low+g<=0) {y=1; y1=low;}
+                        else if(up<k/(low+g)-g) {y=1; y1=low;}
+                        else if(up==k/(low+g)-g) {y=2; y1=low; y2=up;}
+                        else {y=1; y1=up;}
+                        mm=1/(i+d*2);
+                        nn=(y1+g)/(y1*y1+e*y1+f);
+                        }
+                    else {x=y=1;
+                    	mm=(low+g)/(low*low+e*low+f);
+                    	nn=(up+g)/(up*up+e*up+f);
+                        if(mm<nn) {x1=up; y1=low;}
+                        if(mm>nn) {x1=low; y1=up;}
+                    }
+                }
+                else {
+                    if(low==p && up==q) {bound=1; div=2; x=1; x1=-d-g; nn=mm=1/(i+d*2);}
+                    else if(low==p) {bound=1; div=1; x=1;
+                        if(up<d-g) {x1=up; nn=mm=(up+g)/(up*up+up*e+f);}
+                        else {x1=d-g; nn=mm=1/(i+d*2);}
+                        d=p;
+                    }
+                    else if(up==q) {bound=1; div=1; x=1;
+                        if(low>d-g) {x1=low; nn=mm=(low+g)/(low*low+low*e+f);}
+                        else {x1=d-g; nn=mm=1/(i+d*2);}
+                        d=q;
+                    }
+                    else if(low==q) {bound=2; div=1; d=q; y=1; y1=up; nn=mm=(y1+g)/(y1*y1+y1*e+f);}
+                    else if(up==p) {bound=2; div=1; y=1;
+                        if(0<up+d+g) y1=low;
+                        else y1=-d-g;
+                        nn=mm=(y1+g)/(y1*y1+y1*e+f);
+                        d=p;
+                    }
+                    else if(low<d-g && d-g<up) {x=1; x1=d-g;
+                        if(up<k/(low+g)-g) {y=1; y1=low;}
+                        else if(up==k/(low+g)-g) {y=2; y1=low; y2=up;}
+                        else {y=1; y1=up;}
+                        mm=(y1+g)/(y1*y1+e*y1+f);
+                        nn=1/(i+d*2);
+                    }
+                    else if(low+d+g<0 && 0<up+d+g) {y=1; y1=-d-g;
+                        if(0<=up+g) {x=1; x1=up;}
+                        else if(up<k/(low+g)-g) {x=1; x1=low;}
+                        else if(up==k/(low+g)-g) {x=2; x1=low; x2=up;}
+                        else {x=1; x1=up;}
+                        mm=1/(i-d*2);
+                        nn=(x1+g)/(x1*x1+e*x1+f);
+                    }
+                    else {x=y=1;
+                    	mm=(low+g)/(low*low+e*low+f);
+                    	nn=(up+g)/(up*up+e*up+f);
+                        if(mm<nn) {x1=up; y1=low;}
+                        if(mm>nn) {x1=low; y1=up;}
+                    }
+                }
             }
             if(mark==4) {mid=b/A; mm=mm*mid; nn=nn*mid; inf=inf*mid; h=1;}
             if(mark==5) {mid=a/A; mm=(mm*h+1)*mid; nn=(nn*h+1)*mid; inf=(inf*h+1)*mid;}
@@ -437,12 +509,11 @@ main()
                 mid=x2; x2=y2; y2=mid;
                 if(bound==1) bound=2;
                 if(bound==2) bound=1;
-		    }
+            }
         }
     }
-
     
-    if(div==0 && limit==0) {mid=min(mm,nn); nn=max(mm,nn); mm=mid;}
+    if(div==0 && limit==0 && nn<mm) {mid=mm; mm=nn; nn=mid;}
     printf("\n--------------------------------\n\n");
     if(bound==-1) printf("min=max=%lf at each point in the domain\n",mm);
     if(bound==0 && x==1) printf("At x=%lf; min=%lf\n",x1,mm);
@@ -464,5 +535,4 @@ main()
     if(div==2) printf("f(x) diverges at x=%lf and x=%lf\n",p,q);
     if(limit>=1) printf("f(x) converges to %lf at x=%lf",inf,p);
     if(limit==2) printf(", and to %lf at x=%lf",sup,q);
-    printf("%lf",test);
 }
