@@ -70,7 +70,7 @@ int main()
             nn=(a*up*up+b*up+c)/C;
             if(mm<nn) {x1=low; y1=up;}  //to rank x,y
             if(mm>nn) {x1=up; y1=low;}
-}
+        }
     }
     else
 
