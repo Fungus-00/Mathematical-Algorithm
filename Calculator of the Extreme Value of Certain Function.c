@@ -1,7 +1,7 @@
 #include    <stdio.h>
 #include    <math.h>
 
-main()
+int main()
 {
     int bound=0,ex=0,mark=0,limit=0,div=0,x=0,y=0;
     double   a,b,c,A,B,C,low,up,mid,d,e,f,g,h,i,j=0,k,mm=1,nn=1,D,p,q,x1,x2=0,y1,y2=0,sup,inf;
@@ -70,7 +70,7 @@ main()
             nn=(a*up*up+b*up+c)/C;
             if(mm<nn) {x1=low; y1=up;}  //to rank x,y
             if(mm>nn) {x1=up; y1=low;}
-		}
+}
     }
     else
 
@@ -114,7 +114,7 @@ main()
                 if(mm>nn) {x1=up; y1=low;}
                 }
         }
-        
+       
         else {e=sqrt(k); j=a/B;  //#a pair of ticks
             if(low<d && d<up || low==d && d==up) {bound=3; div=1;}
             else if(low==d) {div=1;
@@ -137,7 +137,7 @@ main()
                     else {y1=d-e; mm=(b+a*(d-e)*2)/B;}
                 }
             }
-            else if(low+e<=d && d<=up+e) {mark=-1; nn=(b+a*(d-e)*2)/B;}	//vertex ordinate of the very tick (the same below)
+            else if(low+e<=d && d<=up+e) {mark=-1; nn=(b+a*(d-e)*2)/B;}   //vertex ordinate of the very tick (the same below)
             else if(low<d+e && d+e<=up) {mark=1; nn=(b+a*(d+e)*2)/B;}
             else {x=y=1;
                 mm=(a*low*low+b*low+c)/(B*low+C);
@@ -146,9 +146,9 @@ main()
                 if(mm>nn) {x1=up; y1=low;}
             }
             if(mark!=0) {  //The vertex abscissa of a certain tick is between upper bound and lower bound.
-                if(up<=d+k/(low-d)) mm=(a*low*low+b*low+c)/(B*low+C);
-                else mm=(a*up*up+b*up+c)/(B*up+C);	//The following is to rank x,y.
-                if(i==h) {
+                if(up<=d+k/(low-d)) {mm=(a*low*low+b*low+c)/(B*low+C); mid=low;}
+                else {mm=(a*up*up+b*up+c)/(B*up+C); mid=up;}  //The following is to rank x,y.
+                if(up==d+k/(low-d)) {
                     if(mm<nn) {
                         x=2; x1=low; x2=up; y=1;
                         if(mark==-1) y1=d-e;
@@ -186,15 +186,15 @@ main()
             else if(h==0) mark=3;
             else {mark=5; g=g/h;}
         }
-        
+       
         if(mark==1) {D=e*e-f*4;    //#constant function
             bound=-1; mm=nn=a/A;
             if(D==0) {ex=1; d=-e/2;    //to judge if the bound exists (the same below)
                 if(low==d && d==up) bound=3;
                 else if(low==d) {limit=1; p=low; inf=mm;}
                 else if(up==d) {limit=1; p=up; inf=mm;}
-        	}
-            else if(D>0){ex=2; sup=inf=mm;
+            }
+            else if(D>0) {ex=2; sup=inf=mm;
                 p=(-e-sqrt(D))/2; q=(-e+sqrt(D))/2;
                 if(low==up && (low==p || low==q)) bound=3;
                 else if(low==p && q==up) limit=2;
@@ -221,7 +221,7 @@ main()
                     if(mm>nn) {x1=up; y1=low;}
                 }
             }
-            else if(D==0) {ex=1;    //Function diverges at two points.
+            else if(D==0) {ex=1;    //Function diverges at one point.
                 if (low==d && d==up) {bound=3; mark=0;}
                 else if(low==d) {bound=2; div=1; y=1; y1=up; mm=nn=up*up+e*up+f;}
                 else if(up==d) {bound=2; div=1; y=1; y1=low; mm=nn=low*low+e*low+f;}
@@ -229,7 +229,7 @@ main()
                     bound=2; div=1;
                     if(low+up==d*2) {y=2; y1=low; y2=up; mm=nn=low*low+e*low+f;}   //to rank x,y
                     else if(low+up<d*2) {y=1; y1=low; mm=nn=low*low+e*low+f;}
-                    else {y=1; y1=up; up*up+e*up+f;}
+                    else {y=1; y1=up; mm=nn=up*up+e*up+f;}
                 }
                 else {x=y=1;
                     mm=low*low+e*low+f;
@@ -453,8 +453,8 @@ main()
                         nn=(y1+g)/(y1*y1+e*y1+f);
                         }
                     else {x=y=1;
-                    	mm=(low+g)/(low*low+e*low+f);
-                    	nn=(up+g)/(up*up+e*up+f);
+                        mm=(low+g)/(low*low+e*low+f);
+                        nn=(up+g)/(up*up+e*up+f);
                         if(mm<nn) {x1=up; y1=low;}
                         if(mm>nn) {x1=low; y1=up;}
                     }
@@ -494,8 +494,8 @@ main()
                         nn=(x1+g)/(x1*x1+e*x1+f);
                     }
                     else {x=y=1;
-                    	mm=(low+g)/(low*low+e*low+f);
-                    	nn=(up+g)/(up*up+e*up+f);
+                        mm=(low+g)/(low*low+e*low+f);
+                        nn=(up+g)/(up*up+e*up+f);
                         if(mm<nn) {x1=up; y1=low;}
                         if(mm>nn) {x1=low; y1=up;}
                     }
